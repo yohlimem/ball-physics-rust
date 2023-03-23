@@ -1,7 +1,7 @@
 use nannou::prelude::*;
 use crate::{GRAVITY, Model};
 
-
+#[derive(Copy, Clone)]
 pub struct Ball{
 
     pub pos: Vec2,
@@ -21,12 +21,16 @@ impl Ball {
         }
     }
 
-    pub fn update(&mut self) {
+    pub fn update(&mut self, ball_array: &mut Vec<Ball>) {
         self.update_movement();
         self.add_gravity();
-        let collision_normal = self.bound_col(600.0, 400.0);
-        if collision_normal.0 {
-            self.velocity *= -collision_normal.1.abs();
+        let border_collision = self.bound_col(600.0, 400.0);
+        if border_collision.0 {
+            self.velocity *= -border_collision.1.abs();
+        }
+        let circles_collision = self.check_collision(&ball_array.clone());
+        if circles_collision.0 {
+            self.velocity = circles_collision.1;
         }
 
     }
@@ -53,17 +57,17 @@ impl Ball {
         return (false, vec2(1.0,1.0));
     }
 
-    pub fn check_collision(&mut self, ball_array: &mut Vec<Ball>) -> bool {
+    pub fn check_collision(&mut self, ball_array: &Vec<Ball>) -> (bool, Vec2) {
         for i in ball_array{
             if i.pos == self.pos {
                 continue;
             }
             let d = ((self.pos.x - i.pos.x) * (self.pos.x - i.pos.x) + (self.pos.y - i.pos.y) * (self.pos.y - i.pos.y)).sqrt();
             if (i.radius - self.radius).abs() <= d && d <= (i.radius + self.radius).abs(){
-                return true;
+                return (true, vec2((self.pos.x - i.pos.x), (self.pos.y - i.pos.y)));
             }
         }
-        return false;
+        return (false, vec2(0.0, 0.0));
     }
 }
 

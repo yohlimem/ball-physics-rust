@@ -19,11 +19,12 @@ fn model(app: &App) -> Model {
     let mut ball_array = vec![];
     for i in 0..NUM_BALLS {
         ball_array.push(Ball {
-            pos: vec2(0.0,0.0),
+            pos: vec2((i * 40) as f32, 0.0),
             radius: 20.0,
             mass: 10.0,
             velocity: vec2(0.0,0.0),
             acceleration: vec2(0.0,0.0),
+            id: i,
         });
     }
 
@@ -34,9 +35,10 @@ fn model(app: &App) -> Model {
 }
 
 fn update(app: &App, model: &mut Model, _update: Update) {
-    for j in 0..model.ball_array.len() {
-        model.ball_array[j].update();
+    for ball in 0..model.ball_array.len() - 1 {
+        model.ball_array[ball].update(&mut model.ball_array[ball + 1]);
     }
+
 }
 
 fn view(app: &App, model: &Model, frame: Frame) {
