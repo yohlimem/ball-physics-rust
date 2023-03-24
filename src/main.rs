@@ -1,7 +1,10 @@
 mod ball;
 
+use std::default;
 use crate::ball::Ball;
 use nannou::prelude::*;
+use nannou::text::font::default;
+use nannou::winit::window::CursorIcon::Default;
 use rand::Rng;
 
 const NUM_BALLS: u32 = 10;
@@ -40,13 +43,23 @@ fn model(app: &App) -> Model {
 }
 
 fn update(app: &App, model: &mut Model, _update: Update) {
+    if app.mouse.buttons.left().is_down() {
+        model.ball_array.push(Ball {
+            pos: app.mouse.position(),
+            radius: 20.0,
+            mass: 10.0,
+            velocity: vec2(0.0,0.0),
+            acceleration: vec2(0.0,0.0),
+            bouncy: 1.0
+        })
+    }
     for ball in 0..model.ball_array.len() {
         model.ball_array[ball].update();
         let circles_collision = model.ball_array[ball].clone().check_collision(&model.ball_array.clone());
         if circles_collision.0 {
             // while model.ball_array[ball].clone().check_collision(&model.ball_array.clone()).0 {
             //     let go_dir = model.ball_array[ball].clone().check_collision(&model.ball_array.clone()).2;
-            //     model.ball_array[ball].pos -= go_dir;
+            //     model.ball_array[ball].pos += go_dir;
             // }
             model.ball_array[ball].velocity = circles_collision.1;
         }

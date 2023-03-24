@@ -2,7 +2,7 @@ use std::ops::{Add, Div, Mul};
 use nannou::prelude::*;
 use crate::{GRAVITY};
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct Ball{
 
     pub pos: Vec2,
@@ -12,6 +12,15 @@ pub struct Ball{
     pub acceleration: Vec2,
     pub bouncy: f32,
 
+}
+
+impl Ball {
+    pub fn from(pos: Vec2, radius: f32, mass: f32, velocity: Vec2, acceleration: Vec2, bouncy: f32,) -> Ball{
+        Ball{pos, radius, mass, velocity, acceleration,bouncy}
+    }
+    pub fn new() -> Ball{
+        Ball{pos: vec2(0.0,0.0), radius: 100.0, mass: 0.0, velocity: vec2(0.0,0.0), acceleration: vec2(0.0,0.0), bouncy: 1.0}
+    }
 }
 
 impl Ball {
